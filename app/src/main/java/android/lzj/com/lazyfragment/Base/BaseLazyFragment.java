@@ -17,6 +17,7 @@ public abstract class BaseLazyFragment extends Fragment {
     private static final String TAG = "BaseLazyFragment";
     private boolean isFirstVisible = true;
     private boolean isFirstInvisible = true;
+    private boolean isFirstResume = true;
 
     private boolean isViewCreated;
     private boolean isUIVisible;
@@ -31,6 +32,15 @@ public abstract class BaseLazyFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: ");
+        if (isFirstResume) {
+            //第一次进入，setUserVisibleHint  执行，防止重复
+            isFirstResume = false;
+            return;
+        }
+        //解锁时执行
+        if (getUserVisibleHint()) {
+            onUserVisible();
+        }
     }
 
     @Nullable
@@ -92,6 +102,7 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        //解锁时执行
         Log.d(TAG, "onPause: ");
     }
 
